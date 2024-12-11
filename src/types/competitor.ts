@@ -1,4 +1,4 @@
-import { Domain } from './product';
+import { Domain, Industry, ProductStage } from "./product";
 
 export interface Competitor {
   id: string;
@@ -17,4 +17,6 @@ export interface CompetitorFormData {
   name: string;
   website: string;
   domain?: Domain;
+  industry: Industry;
+  stage: ProductStage;
 }

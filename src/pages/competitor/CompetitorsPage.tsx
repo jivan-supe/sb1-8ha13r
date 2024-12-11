@@ -1,18 +1,20 @@
-import { useState, useEffect } from 'react';
-import { Search, Plus, Save } from 'lucide-react';
-import { toast } from 'react-hot-toast';
-import AddCompetitorModal from './AddCompetitorModal';
-import CompetitorLoader from '../../components/competitor/CompetitorLoader';
-import SelectableCompetitorCard from '../../components/competitor/SelectableCompetitorCard';
-import { competitorService } from '../../services/competitorService';
-import { Competitor } from '../../types/competitor';
+import { useState, useEffect } from "react";
+import { Search, Plus, Save } from "lucide-react";
+import { toast } from "react-hot-toast";
+import AddCompetitorModal from "./AddCompetitorModal";
+import CompetitorLoader from "../../components/competitor/CompetitorLoader";
+import SelectableCompetitorCard from "../../components/competitor/SelectableCompetitorCard";
+import { competitorService } from "../../services/competitorService";
+import { Competitor } from "../../types/competitor";
 
 export default function CompetitorsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isIdentifying, setIsIdentifying] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
-  const [selectedCompetitors, setSelectedCompetitors] = useState<Set<string>>(new Set());
+  const [selectedCompetitors, setSelectedCompetitors] = useState<Set<string>>(
+    new Set()
+  );
 
   useEffect(() => {
     loadCompetitors();
@@ -24,8 +26,8 @@ export default function CompetitorsPage() {
       const data = await competitorService.getCompetitors();
       setCompetitors(data);
     } catch (error) {
-      toast.error('Failed to load competitors');
-      console.error('Error loading competitors:', error);
+      toast.error("Failed to load competitors");
+      console.error("Error loading competitors:", error);
     } finally {
       setIsLoading(false);
     }
@@ -34,20 +36,21 @@ export default function CompetitorsPage() {
   const handleIdentifyCompetitor = async () => {
     try {
       setIsIdentifying(true);
-      const identifiedCompetitors = await competitorService.identifyCompetitors();
+      const identifiedCompetitors =
+        await competitorService.identifyCompetitors();
       setCompetitors(identifiedCompetitors);
       setSelectedCompetitors(new Set());
-      toast.success('Successfully identified competitors');
+      toast.success("Successfully identified competitors");
     } catch (error) {
-      toast.error('Failed to identify competitors');
-      console.error('Error identifying competitors:', error);
+      toast.error("Failed to identify competitors");
+      console.error("Error identifying competitors:", error);
     } finally {
       setIsIdentifying(false);
     }
   };
 
   const handleToggleSelect = (id: string) => {
-    setSelectedCompetitors(prev => {
+    setSelectedCompetitors((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
         newSet.delete(id);
@@ -62,37 +65,43 @@ export default function CompetitorsPage() {
     try {
       const selectedIds = Array.from(selectedCompetitors);
       await competitorService.saveSelectedCompetitors(selectedIds);
-      toast.success('Successfully saved competitor selection');
+      toast.success("Successfully saved competitor selection");
     } catch (error) {
-      toast.error('Failed to save competitor selection');
-      console.error('Error saving competitor selection:', error);
+      toast.error("Failed to save competitor selection");
+      console.error("Error saving competitor selection:", error);
     }
   };
 
   const handleAddCompetitor = async () => {
     await loadCompetitors();
     setIsModalOpen(false);
-    toast.success('Competitor added successfully');
+    toast.success("Competitor added successfully");
   };
 
   return (
     <div className="max-w-7xl mx-auto">
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">Competitors</h1>
-        
-        <div className="flex flex-col sm:flex-row gap-4">
-          <button
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-between">
+          <label className="block text-xl font-medium text-gray-700">
+            4{" "}
+            <label className="text-sm font-medium text-gray-700">
+              competitors found
+            </label>
+          </label>
+          {/* <button
             onClick={handleIdentifyCompetitor}
             disabled={isIdentifying}
             className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors disabled:opacity-50"
           >
             <Search className="h-5 w-5" />
             <span>Identify my Competitors</span>
-          </button>
-          
+          </button> */}
+
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex-1 flex items-center justify-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+            className="flex-2 flex items-center justify-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
           >
             <Plus className="h-5 w-5" />
             <span>Add Competitor</span>
